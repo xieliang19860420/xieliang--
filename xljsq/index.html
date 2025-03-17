@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心率区间计算器</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+
+        .calculator {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            width: 200px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            background: #e9f5ff;
+            border-radius: 8px;
+        }
+
+        .zone {
+            margin: 10px 0;
+            padding: 12px;
+            border-left: 4px solid;
+        }
+
+        .zone-1 { border-color: #4CAF50; }
+        .zone-2 { border-color: #2196F3; }
+        .zone-3 { border-color: #FFC107; }
+        .zone-4 { border-color: #FF5722; }
+        .zone-5 { border-color: #F44336; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>心率区间计算器</h2>
+        <div>
+            <input type="number" id="age" placeholder="请输入年龄" min="18" max="100">
+            <button onclick="calculateZones()">计算</button>
+        </div>
+        
+        <div class="result" id="result">
+            <!-- 结果将动态插入到这里 -->
+        </div>
+    </div>
+
+    <script>
+        function calculateZones() {
+            const age = parseInt(document.getElementById('age').value);
+            if (!age || age < 18 || age > 100) {
+                alert("请输入有效年龄（18-100）");
+                return;
+            }
+
+            const maxHR = 220 - age;
+            const zones = [
+                { name: "热身区 (Z1)", range: [maxHR*0.50, maxHR*0.60], desc: "轻度活动，提升血液循环" },
+                { name: "燃脂区 (Z2)", range: [maxHR*0.60, maxHR*0.70], desc: "最佳脂肪燃烧区间" },
+                { name: "有氧区 (Z3)", range: [maxHR*0.70, maxHR*0.80], desc: "提升心肺耐力" },
+                { name: "阈值区 (Z4)", range: [maxHR*0.80, maxHR*0.90], desc: "提高乳酸阈值" },
+                { name: "极限区 (Z5)", range: [maxHR*0.90, maxHR], desc: "无氧运动，短期爆发" }
+            ];
+
+            let html = `<h3>最大心率：${maxHR} BPM</h3>`;
+            zones.forEach((zone, index) => {
+                html += `
+                <div class="zone zone-${index+1}">
+                    <strong>${zone.name}</strong><br>
+                    心率范围：${Math.round(zone.range[0])}-${Math.round(zone.range[1])} BPM<br>
+                    <small>${zone.desc}</small>
+                </div>`;
+            });
+
+            document.getElementById('result').innerHTML = html;
+        }
+
+        // 支持回车键触发计算
+        document.getElementById('age').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateZones();
+        });
+    </script>
+</body>
+</html>
